@@ -8,7 +8,7 @@ AFRAME.registerComponent('grabbable', inherit(base, {
   schema: {
     maxGrabbers: {type: 'int', default: NaN},
     invert: {default: false},
-    suppressY: {default: false}
+    suppress: {type: 'string', default: ''}
   },
   init: function () {
     this.GRABBED_STATE = 'grabbed'
@@ -16,6 +16,7 @@ AFRAME.registerComponent('grabbable', inherit(base, {
     this.UNGRAB_EVENT = 'grab-end'
     this.grabbed = false
     this.grabbers = []
+    this.suppress = this.data.suppress.toLowerCase()
     this.constraints = new Map()
     this.deltaPositionIsValid = false
     this.grabDistance = undefined
@@ -33,9 +34,9 @@ AFRAME.registerComponent('grabbable', inherit(base, {
   },
   update: function () {
     this.physicsUpdate()
-    this.xFactor = (this.data.invert) ? -1 : 1
-    this.zFactor = (this.data.invert) ? -1 : 1
-    this.yFactor = ((this.data.invert) ? -1 : 1) * !this.data.suppressY
+    this.xFactor = ((this.data.invert) ? -1 : 1) * !this.suppress.includes('x')
+    this.zFactor = ((this.data.invert) ? -1 : 1) * !this.suppress.includes('z')
+    this.yFactor = ((this.data.invert) ? -1 : 1) * !this.suppress.includes('y')
   },
   tick: (function () {
     var q = new THREE.Quaternion()
